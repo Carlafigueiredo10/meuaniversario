@@ -171,8 +171,11 @@
   .scroll-cue{margin-top:36px}
   .cueBtn{font-family:'Fraunces';font-weight:600;font-size:1.05rem;cursor:pointer;border:none;border-radius:40px;
     background:linear-gradient(135deg,var(--terra),var(--terra-deep));color:#fff;padding:14px 28px;
-    box-shadow:0 12px 30px rgba(212,102,63,.4);display:inline-flex;align-items:center;gap:10px;transition:.2s}
-  .cueBtn:hover{transform:translateY(-2px) scale(1.02)}
+    box-shadow:0 12px 30px rgba(212,102,63,.4);display:inline-flex;align-items:center;gap:10px;transition:.2s;
+    animation:cuePulse 2.1s ease-in-out infinite}
+  .cueBtn:hover{animation:none;transform:translateY(-2px) scale(1.04)}
+  @keyframes cuePulse{0%,100%{transform:scale(1);box-shadow:0 12px 30px rgba(212,102,63,.4)}
+    50%{transform:scale(1.045);box-shadow:0 18px 44px rgba(212,102,63,.65)}}
 
   section{padding:34px 0}
   .panel{background:var(--cream);border:1.5px solid var(--line);border-radius:var(--radius);padding:34px clamp(20px,5vw,40px);box-shadow:0 14px 40px var(--shadow);position:relative}
