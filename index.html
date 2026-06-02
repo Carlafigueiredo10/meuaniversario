@@ -60,6 +60,18 @@
   .wrap{max-width:880px;margin:0 auto;padding:0 22px}
 
   header{position:relative;padding:64px 0 30px;text-align:center;overflow:hidden}
+  .photo{
+    position:relative;width:clamp(120px,30vw,168px);aspect-ratio:1;margin:0 auto 24px;
+    border-radius:50%;overflow:hidden;background:var(--bg-2);
+    border:4px solid var(--cream);box-shadow:0 10px 28px var(--shadow),0 0 0 2px var(--line);
+    display:flex;align-items:center;justify-content:center;
+    opacity:0;animation:rise .8s .05s forwards;
+  }
+  .photo img{width:100%;height:100%;object-fit:cover;display:block}
+  .photo-ph{
+    position:absolute;font-family:'Fraunces';font-weight:600;font-size:.82rem;line-height:1.25;
+    text-align:center;color:var(--terra-deep);opacity:.7;padding:0 10px;
+  }
   .kicker{
     font-family:'Hanken Grotesk';font-weight:600;letter-spacing:.32em;text-transform:uppercase;
     font-size:.72rem;color:var(--terra-deep);margin-bottom:18px;
@@ -164,6 +176,10 @@
 
 <header>
   <div class="wrap">
+    <div class="photo">
+      <img id="fotoCarla" src="foto.jpg" alt="Carla" onerror="this.style.display='none'">
+      <span class="photo-ph">Sua foto<br>aqui ✨🐱</span>
+    </div>
     <div class="kicker">Você está convidadx · 27 de junho</div>
     <h1>O aniversário<br>da <em>Carla</em> <span class="paw">🐾</span></h1>
     <p class="sub">A regra é simples: se você gosta de mim, vem comemorar. Se gosta mas não pode, aceito um recadinho. E se não gosta… não precisa fazer nada 😄🐾</p>
