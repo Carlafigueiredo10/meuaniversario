@@ -282,8 +282,8 @@
    ============================================================ */
 const CONFIG = {
   // --- Supabase (a ANON key pode ficar exposta SE o RLS estiver ligado) ---
-  SB_URL:  "https://SEU-PROJETO.supabase.co",
-  SB_KEY:  "SUA_ANON_KEY",
+  SB_URL:  "https://rwdiujiuryiwqfsviitf.supabase.co",
+  SB_KEY:  "sb_publishable_9JmoCSyrmfCqLB_ThbfWFQ_GGu3EuDe",
 
   // --- PIX / abrigo ---
   pixKey:  "SUA_CHAVE_PIX_AQUI",          // ex: "carla@email.com" ou seu CPF
@@ -419,7 +419,7 @@ $("#copyPix").onclick = async ()=>{
 
 /* ---------- RSVP ---------- */
 async function loadRSVP(){
-  const { data: list = [], error } = await db.from("rsvp")
+  const { data: list = [], error } = await db.from("aniv_rsvp")
     .select("*").order("created_at", { ascending:false });
   if(error){ console.error(error); return; }
   let vou=0, talvez=0, pessoas=0;
@@ -449,7 +449,7 @@ $("#rsvpBtn").onclick = async ()=>{
     qtd: Math.max(1, Math.min(10, parseInt($("#qtd").value)||1)),
     recado: $("#recado").value.trim() || null
   };
-  const { error } = await db.from("rsvp").insert(rec);
+  const { error } = await db.from("aniv_rsvp").insert(rec);
   if(error){ toast("Ops, tenta de novo 🙀"); console.error(error); }
   else{
     toast(chosenStatus==="nao" ? "Que pena! Mas obrigada 🧡" : "Confirmado! Te espero 🎉");
@@ -461,7 +461,7 @@ $("#rsvpBtn").onclick = async ()=>{
 
 /* ---------- Doações ---------- */
 async function loadDonations(){
-  const { data: list = [], error } = await db.from("pledges")
+  const { data: list = [], error } = await db.from("aniv_pledges")
     .select("*").order("created_at", { ascending:false });
   if(error){ console.error(error); return; }
   let total=0; const counts={};
@@ -486,7 +486,7 @@ $("#pledgeBtn").onclick = async ()=>{
   if(!nome){ toast("Coloca teu nome 🐾"); $("#dnome").focus(); return; }
   if(!valor || valor<=0){ toast("Coloca o valor que você doou 💸"); $("#valor").focus(); return; }
   const btn=$("#pledgeBtn"); btn.disabled=true; btn.textContent="Registrando…";
-  const { error } = await db.from("pledges").insert({ nome, valor: Math.round(valor), gift_id: chosenGift });
+  const { error } = await db.from("aniv_pledges").insert({ nome, valor: Math.round(valor), gift_id: chosenGift });
   if(error){ toast("Ops, tenta de novo 🙀"); console.error(error); }
   else{
     toast("Os gatinhos agradecem! 😻🧡");
