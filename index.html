@@ -67,9 +67,9 @@
     display:flex;align-items:center;justify-content:center;
     opacity:0;animation:rise .8s .05s forwards;
   }
-  .photo img{width:100%;height:100%;object-fit:cover;object-position:50% 20%;display:block}
+  .photo img{position:relative;z-index:1;width:100%;height:100%;object-fit:cover;object-position:50% 20%;display:block}
   .photo-ph{
-    position:absolute;font-family:'Fraunces';font-weight:600;font-size:.82rem;line-height:1.25;
+    position:absolute;z-index:0;font-family:'Fraunces';font-weight:600;font-size:.82rem;line-height:1.25;
     text-align:center;color:var(--terra-deep);opacity:.7;padding:0 10px;
   }
   .kicker{
