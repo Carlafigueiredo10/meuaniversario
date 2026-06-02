@@ -83,7 +83,8 @@
   .scroll-cue a{color:var(--ink-soft);text-decoration:none;font-size:.85rem;font-weight:600;display:inline-flex;align-items:center;gap:8px}
   .scroll-cue span{display:inline-block;animation:bob 1.8s ease-in-out infinite}
 
-  .actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:26px auto 0;opacity:0;animation:rise .9s .7s forwards}
+  .act-title{font-weight:600;letter-spacing:.22em;text-transform:uppercase;font-size:.72rem;color:var(--terra-deep);margin:26px auto 0;opacity:0;animation:rise .9s .68s forwards}
+  .actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:10px auto 0;opacity:0;animation:rise .9s .7s forwards}
   .act{display:inline-flex;align-items:center;gap:8px;font-family:'Hanken Grotesk';font-weight:700;font-size:.9rem;text-decoration:none;cursor:pointer;border:1.5px solid var(--line);background:var(--cream);color:var(--ink);border-radius:30px;padding:11px 18px;transition:.18s;box-shadow:0 4px 12px var(--shadow)}
   .act:hover{transform:translateY(-2px);border-color:var(--terra);color:var(--terra-deep)}
   .act.primary{background:var(--terra);color:#fff;border-color:var(--terra)}
@@ -173,9 +174,14 @@
       <div class="fact"><div class="lbl">Cidade</div><div class="val">Brasília</div></div>
     </div>
 
+    <div class="act-title">Coloque na agenda</div>
     <div class="actions">
       <a class="act primary" id="gcalBtn" target="_blank" rel="noopener">📅 Google Agenda</a>
       <a class="act" id="icsBtn">🍎 Apple / Outlook</a>
+    </div>
+
+    <div class="act-title">Como chegar</div>
+    <div class="actions">
       <a class="act" id="mapsBtn" target="_blank" rel="noopener">📍 Maps</a>
       <a class="act" id="wazeBtn" target="_blank" rel="noopener">🚗 Waze</a>
     </div>
