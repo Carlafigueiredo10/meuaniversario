@@ -258,6 +258,26 @@
     animation:popb .6s cubic-bezier(.2,1.3,.4,1)}
   @keyframes popb{from{transform:scale(.5);opacity:0}to{transform:scale(1);opacity:1}}
 
+  /* ---------- pop-up "deixa um presentinho" ---------- */
+  #giftpop{position:fixed;inset:0;z-index:6200;display:none;align-items:center;justify-content:center;padding:22px;
+    background:rgba(11,8,5,.74);backdrop-filter:blur(7px)}
+  #giftpop.show{display:flex;animation:rise .35s ease}
+  .gpcard{background:var(--cream);border:1.5px solid var(--line);border-radius:24px;max-width:400px;width:100%;
+    padding:30px 26px 26px;box-shadow:0 30px 80px rgba(0,0,0,.5);text-align:center;position:relative}
+  .gpclose{position:absolute;top:10px;right:14px;border:none;background:none;font-size:1.4rem;cursor:pointer;color:var(--ink-soft);line-height:1}
+  .gpclose:hover{color:var(--terra-deep)}
+  .gpcat{width:150px;height:150px;border-radius:50%;object-fit:cover;margin:0 auto 16px;display:block;
+    border:4px solid var(--cream);box-shadow:0 12px 30px var(--shadow),0 0 0 2px var(--line);animation:float 5s ease-in-out infinite}
+  .gptitle{font-family:'Fraunces';font-weight:900;font-size:1.42rem;line-height:1.14}
+  .gptitle em{font-style:italic;color:var(--terra)}
+  .gpsub{color:var(--ink-soft);font-size:.97rem;margin-top:9px}
+  .gpbtns{display:flex;flex-direction:column;gap:10px;margin-top:20px}
+  .gpyes{font-family:'Fraunces';font-weight:600;font-size:1.08rem;cursor:pointer;border:none;border-radius:13px;
+    background:var(--terra);color:#fff;padding:14px;box-shadow:0 10px 24px rgba(212,102,63,.34);transition:.18s}
+  .gpyes:hover{background:var(--terra-deep);transform:translateY(-2px)}
+  .gpno{font-family:inherit;font-weight:600;font-size:.9rem;cursor:pointer;border:none;background:none;color:var(--ink-soft);padding:4px}
+  .gpno:hover{color:var(--terra-deep)}
+
   /* ---------- botão música ---------- */
   #musicBtn{position:fixed;left:16px;bottom:16px;z-index:50;width:46px;height:46px;border-radius:50%;cursor:pointer;
     border:1.5px solid var(--line);background:var(--cream);color:var(--ink);font-size:1.1rem;box-shadow:0 8px 22px var(--shadow);
@@ -434,6 +454,20 @@
     <div class="qtitle" id="qTitle">Pergunta</div>
     <div class="qopts" id="qOpts"></div>
     <div class="qverdict" id="qVerdict"></div>
+  </div>
+</div>
+
+<!-- ===== Pop-up: deixa um presentinho ===== -->
+<div id="giftpop">
+  <div class="gpcard">
+    <button class="gpclose" id="gpClose" aria-label="fechar">×</button>
+    <img class="gpcat" src="gato-triste.jpg" alt="gatinho pedindo um presentinho">
+    <div class="gptitle">Ah… não vai deixar um <em>presentinho?</em></div>
+    <div class="gpsub">Os gatinhos do abrigo fizeram essa carinha 🥺<br>Um PIX simbólico já ajuda demais.</div>
+    <div class="gpbtns">
+      <button class="gpyes" id="gpYes">Quero ajudar os gatinhos 🐾</button>
+      <button class="gpno" id="gpNo">agora não 😿</button>
+    </div>
   </div>
 </div>
 
@@ -745,6 +779,7 @@ $("#rsvpBtn").onclick=async()=>{
     else { toast(chosenStatus==="talvez"?"Anotado! Vê se aparece 😼":"Confirmado! Te espero 🎉"); pawBurst(chosenStatus==="vou"?2:1); bumpEnergy(chosenStatus==="vou"?30:12); }
     $("#nome").value=""; $("#recado").value=""; $("#qtd").value="1";
     if(document.body.classList.contains("unlocked")) await loadRSVP();
+    if(chosenStatus!=="nao") setTimeout(openGiftPop, 1400);   // carinha de pidão pós-confirmação
   }
   btn.disabled=false; btn.textContent="Confirmar 🎉";
 };
@@ -833,6 +868,23 @@ $("#quiz").addEventListener("click",e=>{ if(e.target.id==="quiz") $("#quiz").cla
 $("#cueBtn").onclick=()=>{ openQuiz(()=>$("#confirmar").scrollIntoView({behavior:"smooth"})); };
 
 /* ============================================================
+   POP-UP "deixa um presentinho" (gatinho chorando) — 1x por visitante
+   ============================================================ */
+function openGiftPop(){
+  if(localStorage.getItem("aniv_giftpop")==="1") return;       // já mostrou
+  if($("#giftpop").classList.contains("show")) return;
+  localStorage.setItem("aniv_giftpop","1");
+  $("#giftpop").classList.add("show");
+}
+function closeGiftPop(){ $("#giftpop").classList.remove("show"); }
+$("#gpClose").onclick=closeGiftPop;
+$("#gpNo").onclick=closeGiftPop;
+$("#gpYes").onclick=()=>{ closeGiftPop(); $("#presentes").scrollIntoView({behavior:"smooth"}); setTimeout(()=>$("#dnome").focus(),700); };
+$("#giftpop").addEventListener("click",e=>{ if(e.target.id==="giftpop") closeGiftPop(); });
+/* saída: se o mouse for embora pelo topo (desktop), faz a última cara de pidão */
+addEventListener("mouseout",e=>{ if(!e.relatedTarget && e.clientY<=0) openGiftPop(); });
+
+/* ============================================================
    ÁREA PRIVADA DA CARLA (senha)
    ============================================================ */
 const PRIV=["#rsvpTally","#guestList","#donTally","#donorList"];
@@ -910,6 +962,7 @@ if(ADMIN_PASS){ unlock(ADMIN_PASS).then(ok=>{ if(!ok) sessionStorage.removeItem(
 /* atalhos de teste / acessibilidade */
 if(params.get("nointro")==="1"){ reveal(); }
 if(params.get("festa")==="1"){ reveal(); triggerParty(true); }
+if(params.get("presente")==="1"){ reveal(); setTimeout(()=>$("#giftpop").classList.add("show"),400); } // teste do pop-up
 initEnergy();
 </script>
 </body>
