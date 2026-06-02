@@ -268,6 +268,7 @@
   .gpclose:hover{color:var(--terra-deep)}
   .gpcat{width:150px;height:150px;border-radius:50%;object-fit:cover;margin:0 auto 16px;display:block;
     border:4px solid var(--cream);box-shadow:0 12px 30px var(--shadow),0 0 0 2px var(--line);animation:float 5s ease-in-out infinite}
+  .gpemoji{display:none;background:var(--bg-2);font-size:84px;line-height:150px;text-align:center}
   .gptitle{font-family:'Fraunces';font-weight:900;font-size:1.42rem;line-height:1.14}
   .gptitle em{font-style:italic;color:var(--terra)}
   .gpsub{color:var(--ink-soft);font-size:.97rem;margin-top:9px}
@@ -461,10 +462,11 @@
 <div id="giftpop">
   <div class="gpcard">
     <button class="gpclose" id="gpClose" aria-label="fechar">×</button>
-    <img class="gpcat" src="gato-triste.jpg" alt="gatinho pedindo um presentinho">
-    <div class="gptitle">Ah… não vai deixar um <em>presentinho?</em></div>
-    <div class="gpsub">Os gatinhos do abrigo fizeram essa carinha 🥺<br>Um PIX simbólico já ajuda demais.</div>
-    <div class="gpbtns">
+    <img class="gpcat" id="gpCat" src="gato-triste.jpg" alt="gatinho">
+    <div class="gpcat gpemoji" id="gpEmoji">😻</div>
+    <div class="gptitle" id="gpTitle">Ah… não vai deixar um <em>presentinho?</em></div>
+    <div class="gpsub" id="gpSub">Os gatinhos do abrigo fizeram essa carinha 🥺<br>Um PIX simbólico já ajuda demais.</div>
+    <div class="gpbtns" id="gpBtns">
       <button class="gpyes" id="gpYes">Quero ajudar os gatinhos 🐾</button>
       <button class="gpno" id="gpNo">agora não 😿</button>
     </div>
@@ -870,16 +872,35 @@ $("#cueBtn").onclick=()=>{ openQuiz(()=>$("#confirmar").scrollIntoView({behavior
 /* ============================================================
    POP-UP "deixa um presentinho" (gatinho chorando) — 1x por visitante
    ============================================================ */
+function setGiftState(s){
+  const cat=$("#gpCat"), emoji=$("#gpEmoji");
+  if(s==="happy"){
+    cat.onerror=()=>{ cat.style.display="none"; emoji.textContent="😻"; emoji.style.display="block"; };
+    emoji.style.display="none"; cat.style.display="block"; cat.src="gato-feliz.jpg";
+    $("#gpTitle").innerHTML='Viu? Já <em>melhorou!</em> 😻';
+    $("#gpSub").innerHTML='Obrigada por ajudar os gatinhos 🧡';
+    $("#gpBtns").style.display="none";
+  }else{
+    cat.onerror=null; emoji.style.display="none"; cat.style.display="block"; cat.src="gato-triste.jpg";
+    $("#gpTitle").innerHTML='Ah… não vai deixar um <em>presentinho?</em>';
+    $("#gpSub").innerHTML='Os gatinhos do abrigo fizeram essa carinha 🥺<br>Um PIX simbólico já ajuda demais.';
+    $("#gpBtns").style.display="flex";
+  }
+}
+function showGiftPop(){ setGiftState("cry"); $("#giftpop").classList.add("show"); }
 function openGiftPop(){
   if(localStorage.getItem("aniv_giftpop")==="1") return;       // já mostrou
   if($("#giftpop").classList.contains("show")) return;
   localStorage.setItem("aniv_giftpop","1");
-  $("#giftpop").classList.add("show");
+  showGiftPop();
 }
 function closeGiftPop(){ $("#giftpop").classList.remove("show"); }
 $("#gpClose").onclick=closeGiftPop;
 $("#gpNo").onclick=closeGiftPop;
-$("#gpYes").onclick=()=>{ closeGiftPop(); $("#presentes").scrollIntoView({behavior:"smooth"}); setTimeout(()=>$("#dnome").focus(),700); };
+$("#gpYes").onclick=()=>{
+  setGiftState("happy"); pawBurst(2);
+  setTimeout(()=>{ closeGiftPop(); $("#presentes").scrollIntoView({behavior:"smooth"}); setTimeout(()=>$("#dnome").focus(),700); }, 1800);
+};
 $("#giftpop").addEventListener("click",e=>{ if(e.target.id==="giftpop") closeGiftPop(); });
 /* saída: se o mouse for embora pelo topo (desktop), faz a última cara de pidão */
 addEventListener("mouseout",e=>{ if(!e.relatedTarget && e.clientY<=0) openGiftPop(); });
@@ -962,7 +983,7 @@ if(ADMIN_PASS){ unlock(ADMIN_PASS).then(ok=>{ if(!ok) sessionStorage.removeItem(
 /* atalhos de teste / acessibilidade */
 if(params.get("nointro")==="1"){ reveal(); }
 if(params.get("festa")==="1"){ reveal(); triggerParty(true); }
-if(params.get("presente")==="1"){ reveal(); setTimeout(()=>$("#giftpop").classList.add("show"),400); } // teste do pop-up
+if(params.get("presente")==="1"){ reveal(); setTimeout(showGiftPop,400); } // teste do pop-up
 initEnergy();
 </script>
 </body>
