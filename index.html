@@ -363,6 +363,7 @@
     <div class="actions">
       <a class="act" id="mapsBtn" target="_blank" rel="noopener">📍 Maps</a>
       <a class="act" id="wazeBtn" target="_blank" rel="noopener">🚗 Waze</a>
+      <a class="act" id="uberBtn" target="_blank" rel="noopener">🚙 Uber</a>
     </div>
 
     <div class="scroll-cue"><button class="cueBtn" id="cueBtn">Aceitar a missão 🐾</button></div>
@@ -659,6 +660,10 @@ function attachTilt(el){
     +"&details="+encodeURIComponent(EV.descricao)+"&location="+encodeURIComponent(localFull);
   $("#mapsBtn").href=`https://www.google.com/maps/search/?api=1&query=${L.lat}%2C${L.lng}`;
   $("#wazeBtn").href=`https://waze.com/ul?ll=${L.lat},${L.lng}&navigate=yes`;
+  $("#uberBtn").href="https://m.uber.com/ul/?action=setPickup&pickup=my_location"
+    +`&dropoff[latitude]=${L.lat}&dropoff[longitude]=${L.lng}`
+    +"&dropoff[nickname]="+encodeURIComponent(L.nome)
+    +"&dropoff[formatted_address]="+encodeURIComponent(L.endereco);
   const escics=s=>String(s).replace(/([,;\\])/g,"\\$1");
   const ics=["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Carla//Aniversario//PT","CALSCALE:GREGORIAN",
     "BEGIN:VEVENT","UID:aniversario-carla-"+z(EV.inicio)+"@convite","DTSTAMP:"+z(new Date()),
