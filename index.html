@@ -789,7 +789,8 @@ $("#rsvpBtn").onclick=async()=>{
     else { toast(chosenStatus==="talvez"?"Anotado! Vê se aparece 😼":"Confirmado! Te espero 🎉"); pawBurst(chosenStatus==="vou"?2:1); bumpEnergy(chosenStatus==="vou"?30:12); }
     $("#nome").value=""; $("#recado").value=""; $("#qtd").value="1";
     if(document.body.classList.contains("unlocked")) await loadRSVP();
-    if(chosenStatus!=="nao") setTimeout(openGiftPop, 1400);   // carinha de pidão pós-confirmação
+    const _reason = chosenStatus==="nao" ? "nao" : "";
+    setTimeout(()=>openGiftPop(_reason), 1400);   // oferece a doação pra todo mundo (inclusive quem não vai)
   }
   btn.disabled=false; btn.textContent="Confirmar 🎉";
 };
@@ -895,12 +896,19 @@ function setGiftState(s){
     $("#gpBtns").style.display="flex";
   }
 }
-function showGiftPop(){ setGiftState("cry"); $("#giftpop").classList.add("show"); }
-function openGiftPop(){
+function showGiftPop(reason){
+  setGiftState("cry");
+  if(reason==="nao"){   // quem não pode ir: convite carinhoso a ajudar mesmo assim
+    $("#gpTitle").innerHTML='Não vai dar dessa vez? 🥺';
+    $("#gpSub").innerHTML='Sem problema! Mas que tal deixar um <em>presentinho</em> pros gatinhos do abrigo? 🐾';
+  }
+  $("#giftpop").classList.add("show");
+}
+function openGiftPop(reason){
   if(localStorage.getItem("aniv_giftpop")==="1") return;       // já mostrou
   if($("#giftpop").classList.contains("show")) return;
   localStorage.setItem("aniv_giftpop","1");
-  showGiftPop();
+  showGiftPop(reason);
 }
 function closeGiftPop(){ $("#giftpop").classList.remove("show"); }
 $("#gpClose").onclick=closeGiftPop;
