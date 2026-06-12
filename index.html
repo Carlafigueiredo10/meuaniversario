@@ -212,6 +212,8 @@
   .guest .dot.maybe{background:var(--amber)} .guest .dot.no{background:var(--rose)}
   .guest .gname{font-weight:600}
   .guest .gqtd{font-size:.82rem;color:var(--ink-soft);margin-left:auto;white-space:nowrap}
+  .guest .gdel{border:none;background:none;cursor:pointer;color:var(--rose);font-size:1rem;line-height:1;padding:2px 4px;border-radius:8px;opacity:.55;transition:.15s}
+  .guest .gdel:hover{opacity:1;color:#fff;background:var(--rose);transform:scale(1.1)}
   .guest .gmsg{font-size:.84rem;color:var(--ink-soft);font-style:italic;flex-basis:100%}
 
   .gifts{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:13px;margin-top:24px}
@@ -269,7 +271,7 @@
     padding:30px 26px 26px;box-shadow:0 30px 80px rgba(0,0,0,.5);text-align:center;position:relative}
   .gpclose{position:absolute;top:10px;right:14px;border:none;background:none;font-size:1.4rem;cursor:pointer;color:var(--ink-soft);line-height:1}
   .gpclose:hover{color:var(--terra-deep)}
-  .gpcat{width:150px;height:150px;border-radius:50%;object-fit:cover;margin:0 auto 16px;display:block;
+  .gpcat{width:150px;height:150px;border-radius:50%;object-fit:cover;object-position:50% 32%;margin:0 auto 16px;display:block;
     border:4px solid var(--cream);box-shadow:0 12px 30px var(--shadow),0 0 0 2px var(--line);animation:float 5s ease-in-out infinite}
   .gpemoji{display:none;background:var(--bg-2);font-size:84px;line-height:150px;text-align:center}
   .gptitle{font-family:'Fraunces';font-weight:900;font-size:1.42rem;line-height:1.14}
@@ -466,7 +468,7 @@
 <div id="giftpop">
   <div class="gpcard">
     <button class="gpclose" id="gpClose" aria-label="fechar">×</button>
-    <img class="gpcat" id="gpCat" src="gato-triste.jpg" alt="gatinho">
+    <img class="gpcat" id="gpCat" src="gato-botas.png" alt="gatinho pedindo">
     <div class="gpcat gpemoji" id="gpEmoji">😻</div>
     <div class="gptitle" id="gpTitle">Ah… não vai deixar um <em>presentinho?</em></div>
     <div class="gpsub" id="gpSub">Os gatinhos do abrigo fizeram essa carinha 🥺<br>Um PIX simbólico já ajuda demais.</div>
@@ -753,10 +755,18 @@ async function loadRSVP(){
     div.innerHTML=`<span class="dot ${g.status==='vou'?'':g.status}"></span>
       <span class="gname">${esc(g.nome)}</span>
       <span class="gqtd">${g.status==='vou'?(g.qtd>1?g.qtd+' pessoas':'1 pessoa'):label}</span>
+      <button class="gdel" title="Remover da lista">✕</button>
       ${g.recado?`<span class="gmsg">"${esc(g.recado)}"</span>`:""}`;
+    div.querySelector(".gdel").onclick=()=>delGuest(g.id,g.nome);
     box.appendChild(div);
   });
   return true;
+}
+async function delGuest(id,nome){
+  if(!confirm(`Remover "${nome}" da lista de confirmações?`)) return;
+  const { error }=await db.rpc("aniv_delete_rsvp",{ p_pass:ADMIN_PASS, p_id:id });
+  if(error){ toast("Não consegui remover 🙀"); console.error(error); return; }
+  toast("Removido da lista 🐾"); await loadRSVP();
 }
 async function loadDonations(){
   const { data:list=[], error } = await db.rpc("aniv_list_pledges",{ p_pass:ADMIN_PASS });
@@ -771,10 +781,18 @@ async function loadDonations(){
     const g=GIFTS.find(x=>x.id===d.gift_id);
     const div=document.createElement("div"); div.className="guest";
     div.innerHTML=`<span class="dot"></span><span class="gname">${esc(d.nome)}</span>
-      <span class="gqtd">${g?g.emoji+' ':''}${brl(d.valor)}</span>`;
+      <span class="gqtd">${g?g.emoji+' ':''}${brl(d.valor)}</span>
+      <button class="gdel" title="Remover doação">✕</button>`;
+    div.querySelector(".gdel").onclick=()=>delPledge(d.id,d.nome);
     box.appendChild(div);
   });
   return true;
+}
+async function delPledge(id,nome){
+  if(!confirm(`Remover a doação de "${nome}"?`)) return;
+  const { error }=await db.rpc("aniv_delete_pledge",{ p_pass:ADMIN_PASS, p_id:id });
+  if(error){ toast("Não consegui remover 🙀"); console.error(error); return; }
+  toast("Doação removida 🐾"); await loadDonations();
 }
 
 $("#rsvpBtn").onclick=async()=>{
@@ -890,7 +908,7 @@ function setGiftState(s){
     $("#gpSub").innerHTML='Obrigada por ajudar os gatinhos 🧡';
     $("#gpBtns").style.display="none";
   }else{
-    cat.onerror=null; emoji.style.display="none"; cat.style.display="block"; cat.src="gato-triste.jpg";
+    cat.onerror=null; emoji.style.display="none"; cat.style.display="block"; cat.src="gato-botas.png";
     $("#gpTitle").innerHTML='Ah… não vai deixar um <em>presentinho?</em>';
     $("#gpSub").innerHTML='Os gatinhos do abrigo fizeram essa carinha 🥺<br>Um PIX simbólico já ajuda demais.';
     $("#gpBtns").style.display="flex";
